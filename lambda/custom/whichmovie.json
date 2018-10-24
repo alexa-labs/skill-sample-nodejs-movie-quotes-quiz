@@ -1,0 +1,292 @@
+{
+    "type": "APL",
+    "version": "1.0",
+    "import": [
+        {
+            "name": "alexa-viewport-profiles",
+            "version": "1.0.0"
+        }
+    ],
+    "resources": [
+        {
+            "description": "Movie images",
+            "strings": [
+                {
+                    "wonderWheel": "https://images-na.ssl-images-amazon.com/images/I/81PZpx4RXQL._RI_SX200_.jpg",
+                    "gringo": "https://images-na.ssl-images-amazon.com/images/I/81PZpx4RXQL._RI_SX200_.jpg",
+                    "theWall": "https://images-na.ssl-images-amazon.com/images/I/81PZpx4RXQL._RI_SX200_.jpg",
+                    "lastFlagFlying": "https://images-na.ssl-images-amazon.com/images/I/81PZpx4RXQL._RI_SX200_.jpg",
+                    "paterson": "https://images-na.ssl-images-amazon.com/images/I/81PZpx4RXQL._RI_SX200_.jpg"
+                }
+            ]
+        }
+    ],
+    "layouts": {
+        "MovieListItem": {
+            "parameters": [
+                "movieName",
+                "movieImage"
+            ],
+            "items": [
+                {
+                    "when": "${@viewportProfile == @hubRoundSmall}",
+                    "type": "Container",
+                    "direction": "column",
+                    "alignItems": "center",
+                    "justifyContent": "center",
+                    "width": "75vw",
+                    "height": "100vh",
+                    "paddingBottom": "80",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "source": "https://i.imgur.com/xjK5oVa.png",
+                            "position": "absolute",
+                            "width": "100vw",
+                            "height": "100vh",
+                            "scale": "best-fill"
+                        },
+                        {
+                            "type": "Container",
+                            "direction": "column",
+                            "alignItems": "center",
+                            "width": "80vw",
+                            "items": [
+                                {
+                                    "type": "Text",
+                                    "text": "${movieName}",
+                                    "color": "#ffffff",
+                                    "width": "80vw",
+                                    "textAlign": "center",
+                                    "fontSize": "6vw",
+                                    "paddingBottom": "10"
+                                },
+                                {
+                                    "type": "Image",
+                                    "source": "${movieImage}",
+                                    "width": "50vw",
+                                    "height": "50vh",
+                                    "scale": "best-fit"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "when": "${@viewportProfile == @hubLandscapeMedium || @viewportProfile == @hubLandscapeLarge || @viewportProfile == @tvLandscapeXLarge}",
+                    "type": "Container",
+                    "direction": "column",
+                    "width": "33vw",
+                    "height": "25vh",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "source": "https://i.imgur.com/xjK5oVa.png",
+                            "position": "absolute",
+                            "top": "0vh",
+                            "width": "33vw",
+                            "height": "25vh",
+                            "scale": "best-fill"
+                        },
+                        {
+                            "type": "Container",
+                            "direction": "row",
+                            "position": "absolute",
+                            "top": "0vh",
+                            "left": "2vw",
+                            "width": "33vw",
+                            "height": "25vh",
+                            "items": [
+                                {
+                                    "type": "Text",
+                                    "text": "${movieName}",
+                                    "color": "#ffffff",
+                                    "width": "13vw",
+                                    "fontSize": "3vw",
+                                    "position": "relative",
+                                    "top": "7vh",
+                                    "left": "0vw",
+                                    "paddingBottom": "10"
+                                },
+                                {
+                                    "type": "Image",
+                                    "source": "${movieImage}",
+                                    "width": "16vw",
+                                    "height": "20vh",
+                                    "position": "relative",
+                                    "top": "2vh",
+                                    "left": "0vw",
+                                    "scale": "best-fit"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "mainTemplate": {
+        "item": [
+            {
+                "when": "${@viewportProfile == @hubRoundSmall}",
+                "type": "Container",
+                "direction": "column",
+                "width": "100vw",
+                "height": "100vh",
+                "alignItems": "center",
+                "items": [
+                    {
+                        "type": "Image",
+                        "source": "https://i.imgur.com/W7v1hAY.png",
+                        "position": "absolute",
+                        "width": "100vw",
+                        "height": "100vh",
+                        "scale": "best-fill"
+                    },
+                    {
+                        "type": "ScrollView",
+                        "width": "80vw",
+                        "height": "100vh",
+                        "item": {
+                            "type": "Container",
+                            "direction": "column",
+                            "alignItems": "center",
+                            "width": "80vw",
+                            "items": [
+                                {
+                                    "type": "Text",
+                                    "text": "On which movie would you like to be tested?",
+                                    "color": "#ffffff",
+                                    "fontSize": "7vw",
+                                    "textAlign": "center",
+                                    "width": "80vw",
+                                    "paddingTop": "20vh",
+                                    "paddingBottom": "5vh"
+                                },
+                                {
+                                    "type": "MovieListItem",
+                                    "movieName": "Wonder Wheel",
+                                    "movieImage": "@wonderWheel"
+                                },
+                                {
+                                    "type": "MovieListItem",
+                                    "movieName": "Gringo",
+                                    "movieImage": "@gringo"
+                                },
+                                {
+                                    "type": "MovieListItem",
+                                    "movieName": "The Wall",
+                                    "movieImage": "@theWall"
+                                },
+                                {
+                                    "type": "MovieListItem",
+                                    "movieName": "Last Flag Flying",
+                                    "movieImage": "@lastFlagFlying"
+                                },
+                                {
+                                    "type": "MovieListItem",
+                                    "movieName": "Paterson",
+                                    "movieImage": "@paterson"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "when": "${@viewportProfile == @hubLandscapeMedium || @viewportProfile == @hubLandscapeLarge || @viewportProfile == @tvLandscapeXLarge}",
+                "type": "Container",
+                "direction": "column",
+                "width": "100vw",
+                "height": "100vh",
+                "alignItems": "center",
+                "items": [
+                    {
+                        "type": "Image",
+                        "source": "https://i.imgur.com/B3Oxzfx.png",
+                        "position": "absolute",
+                        "width": "100vw",
+                        "height": "100vh",
+                        "scale": "best-fill"
+                    },
+                    {
+                        "type": "Text",
+                        "text": "On which movie would you like to be tested?",
+                        "color": "#ffffff",
+                        "fontSize": "4vw",
+                        "width": "70vw",
+                        "textAlign": "center",
+                        "paddingTop": "5vh",
+                        "paddingBottom": "5vh"
+                    },
+                    {
+                        "type": "ScrollView",
+                        "height": "70vh",
+                        "width": "72vw",
+                        "item": {
+                            "type": "Container",
+                            "direction": "row",
+                            "width": "70vw",
+                            "alignItems": "start",
+                            "justifyContent": "center",
+                            "paddingBottom": "40",
+                            "items": [
+                                {
+                                    "type": "Container",
+                                    "direction": "column",
+                                    "width": "35vw",
+                                    "alignItems": "center",
+                                    "justifyContent": "center",
+                                    "paddingBottom": "40",
+                                    "items": [
+                                        {
+                                            "type": "MovieListItem",
+                                            "movieName": "Wonder Wheel",
+                                            "movieImage": "@wonderWheel"
+                                        },
+                                        {
+                                            "type": "MovieListItem",
+                                            "movieName": "The Wall",
+                                            "movieImage": "@theWall",
+                                            "position": "relative",
+                                            "top": "3vh"
+                                        },
+                                        {
+                                            "type": "MovieListItem",
+                                            "movieName": "Paterson",
+                                            "movieImage": "@paterson",
+                                            "position": "relative",
+                                            "top": "6vh"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Container",
+                                    "direction": "column",
+                                    "width": "35vw",
+                                    "alignItems": "center",
+                                    "justifyContent": "center",
+                                    "paddingBottom": "40",
+                                    "items": [
+                                        {
+                                            "type": "MovieListItem",
+                                            "movieName": "Gringo",
+                                            "movieImage": "@gringo"
+                                        },
+                                        {
+                                            "type": "MovieListItem",
+                                            "movieName": "Last Flag Flying",
+                                            "movieImage": "@lastFlagFlying",
+                                            "position": "relative",
+                                            "top": "3vh"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,53 @@
+{
+    "type": "APL",
+    "version": "1.0",
+    "import": [
+        {
+            "name": "alexa-viewport-profiles",
+            "version": "1.0.0"
+        }
+    ],
+    "mainTemplate": {
+        "parameters": [
+            "datasource"
+        ],
+        "item": [
+            {
+                "type": "Container",
+                "direction": "row",
+                "width": "100vw",
+                "height": "100vh",
+                "alignItems": "center",
+                "justifyContent": "center",
+                "items": [
+                    {
+                        "when": "${@viewportProfiles == hubRoundSmall}",
+                        "type": "Image",
+                        "source": "${datasource.movieQuoteQuizData.properties.backgroundImageRound}",
+                        "position": "absolute",
+                        "width": "100vw",
+                        "height": "100vh",
+                        "scale": "best-fill"
+                    },
+                    {
+                        "when": "${@viewportProfile == @hubLandscapeMedium || @viewportProfile == @hubLandscapeLarge || @viewportProfile == @tvLandscapeXLarge}",
+                        "type": "Image",
+                        "source": "${datasource.movieQuoteQuizData.properties.backgroundImageLandscape}",
+                        "position": "absolute",
+                        "width": "100vw",
+                        "height": "100vh",
+                        "scale": "best-fill"
+                    },
+                    {
+                        "type": "Text",
+                        "text": "${datasource.movieQuoteQuizData.properties.title}",
+                        "color": "#ffffff",
+                        "width": "65vw",
+                        "fontSize": "5vw",
+                        "textAlign": "center"
+                    }
+                ]
+            }
+        ]
+    }
+}
