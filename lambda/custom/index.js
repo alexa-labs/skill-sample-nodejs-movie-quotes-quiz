@@ -14,23 +14,29 @@ const LaunchRequestHandler = {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
   handle(handlerInput) {
-    return handlerInput.responseBuilder
-    .speak(welcomeMessage)
-    .reprompt(welcomeMessage)
-    .addDirective({
-      type : 'Alexa.Presentation.APL.RenderDocument',
-      version: '1.0',
-      document : Main,
-      datasources : {
-        "movieQuoteQuizData": {
-          "type": "object",
-          "properties": {
-            "title": "How Well Do You Know: Movie Quote Quiz!"
+    if (supportsAPL(handlerInput)) {
+      return handlerInput.responseBuilder
+        .speak(welcomeMessage)
+        .reprompt(welcomeMessage)
+        .addDirective({
+          type : 'Alexa.Presentation.APL.RenderDocument',
+          document : Main,
+          datasources : {
+            "movieQuoteQuizData": {
+              "type": "object",
+              "properties": {
+                "title": "How Well Do You Know: Movie Quote Quiz!"
+              }
+            }
           }
-        }
-      }
-    })
-    .getResponse();
+        })
+        .getResponse();
+    } else {
+      return handlerInput.responseBuilder
+        .speak(welcomeMessage)
+        .reprompt(welcomeMessage)
+        .getResponse();
+    }
   },
 };
 
@@ -47,17 +53,23 @@ const YesIntentHandler = {
       speechText = `Okie dokie, now what movie would you like to try?`;
     }
     console.log(handlerInput.requestEnvelope.request.intent);
-
-    return handlerInput.responseBuilder
-    .speak(speechText)
-    .reprompt(speechText)
-    .addDirective({
-      type : 'Alexa.Presentation.APL.RenderDocument',
-      version: '1.0',
-      document : WhichMovie,
-      datasources : {}
-    })
-    .getResponse();
+    
+    if (supportsAPL(handlerInput)) {
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .reprompt(speechText)
+        .addDirective({
+          type : 'Alexa.Presentation.APL.RenderDocument',
+          document : WhichMovie,
+          datasources : {}
+        })
+        .getResponse();
+    } else {
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .reprompt(speechText)
+        .getResponse();
+    }
   },
 };
 
@@ -74,13 +86,14 @@ const MovieIntentHandler = {
       speechText = `Okie dokie, let's test you on ${currentMovie}. Complete this quote: `;
     } else if (handlerInput.requestEnvelope.request.intent.name === 'NextQuoteIntent') {
       speechText = `Onward! Try completing this quote: `;
+
       if (currentMovie === null) {
         speechText = `Something went wrong.`;
         return handlerInput.responseBuilder
-        .speak(speechText)
-        .reprompt(speechText)
-        .withSimpleCard(`Oops!`, `Try saying, "Alexa, help"`)
-        .getResponse();
+          .speak(speechText)
+          .reprompt(speechText)
+          .withSimpleCard(`Oops!`, `Try saying, "Alexa, help"`)
+          .getResponse();
       }
     }
 
@@ -88,25 +101,31 @@ const MovieIntentHandler = {
     console.log(quote);
     speechText += quote.replace('_____', `<emphasis level="strong">blank</emphasis>`);
 
-    return handlerInput.responseBuilder
-    .speak(speechText)
-    .reprompt(speechText)
-    .addDirective({
-      type : 'Alexa.Presentation.APL.RenderDocument',
-      version: '1.0',
-      document : Quote,
-      datasources : {
-          "movieQuoteQuizData": {
-              "type": "object",
-              "properties": {
-                  "title": quote,
-                  "backgroundImageRound": "https://i.imgur.com/prffOgH.png",
-                  "backgroundImageLandscape": "https://i.imgur.com/sjREu6G.png"
+    if (supportsAPL(handlerInput)) {
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .reprompt(speechText)
+        .addDirective({
+          type : 'Alexa.Presentation.APL.RenderDocument',
+          document : Quote,
+          datasources : {
+              "movieQuoteQuizData": {
+                  "type": "object",
+                  "properties": {
+                      "title": quote,
+                      "backgroundImageRound": "https://i.imgur.com/prffOgH.png",
+                      "backgroundImageLandscape": "https://i.imgur.com/sjREu6G.png"
+                  }
               }
           }
-      }
-    })
-    .getResponse();
+        })
+        .getResponse();
+    } else {
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .reprompt(speechText)
+        .getResponse();
+    }
   }
 };
 
@@ -124,70 +143,78 @@ const AnswerIntentHandler = {
     if (currentChosenWord === null) {
       speechText = `Say "help" if you aren't sure what to do!`;
 
-      return handlerInput.responseBuilder
-        .speak(speechText)
-        .reprompt(speechText)
-        .addDirective({
-            type : 'Alexa.Presentation.APL.RenderDocument',
-            version: '1.0',
-            document : Main,
-            datasources : {
-              "movieQuoteQuizData": {
-                "type": "object",
-                "properties": {
-                  "title": speechText
+      if (supportsAPL(handlerInput)) {
+        return handlerInput.responseBuilder
+          .speak(speechText)
+          .reprompt(speechText)
+          .addDirective({
+              type : 'Alexa.Presentation.APL.RenderDocument',
+              document : Main,
+              datasources : {
+                "movieQuoteQuizData": {
+                  "type": "object",
+                  "properties": {
+                    "title": speechText
+                  }
                 }
               }
-            }
           })
-        .getResponse();
-
+          .getResponse();
+      }
     } else if (currentChosenWord === spokenWord) {
       speechText = getSpeechCon(true);
       quote = `${capitalizeFirstLetter(currentChosenWord)} is correct! Say "new quote" or another movie title!`;
 
-      return handlerInput.responseBuilder
-        .speak(speechText + quote)
-        .reprompt(speechText + quote)
-        .addDirective({
-            type : 'Alexa.Presentation.APL.RenderDocument',
-            version: '1.0',
-            document : Quote,
-            datasources : {
-                "movieQuoteQuizData": {
-                    "type": "object",
-                    "properties": {
-                        "title": quote,
-                        "backgroundImageRound": "https://i.imgur.com/GOsI1RN.png",
-                        "backgroundImageLandscape": "https://i.imgur.com/yHBbX4l.png"
-                    }
-                }
-            }
-        })
-        .getResponse();  
+      if (supportsAPL(handlerInput)) {
+        return handlerInput.responseBuilder
+          .speak(speechText + quote)
+          .reprompt(speechText + quote)
+          .addDirective({
+              type : 'Alexa.Presentation.APL.RenderDocument',
+              document : Quote,
+              datasources : {
+                  "movieQuoteQuizData": {
+                      "type": "object",
+                      "properties": {
+                          "title": quote,
+                          "backgroundImageRound": "https://i.imgur.com/GOsI1RN.png",
+                          "backgroundImageLandscape": "https://i.imgur.com/yHBbX4l.png"
+                      }
+                  }
+              }
+          })
+          .getResponse();
+      }
     } else {
       speechText = getSpeechCon(false);
       quote = `The correct answer was ${currentChosenWord}. Say "new quote" or another movie title!`;
-      return handlerInput.responseBuilder
+      
+      if (supportsAPL(handlerInput)) {
+        return handlerInput.responseBuilder
+          .speak(speechText + quote)
+          .reprompt(speechText + quote)
+          .addDirective({
+              type : 'Alexa.Presentation.APL.RenderDocument',
+              document : Quote,
+              datasources : {
+                  "movieQuoteQuizData": {
+                      "type": "object",
+                      "properties": {
+                          "title": quote,
+                          "backgroundImageRound": "https://i.imgur.com/qkiABIN.png",
+                          "backgroundImageLandscape": "https://i.imgur.com/sfXjUK1.png"
+                      }
+                  }
+              }
+          })
+          .getResponse();  
+      }
+    }
+
+    return handlerInput.responseBuilder
         .speak(speechText + quote)
         .reprompt(speechText + quote)
-        .addDirective({
-            type : 'Alexa.Presentation.APL.RenderDocument',
-            version: '1.0',
-            document : Quote,
-            datasources : {
-                "movieQuoteQuizData": {
-                    "type": "object",
-                    "properties": {
-                        "title": quote,
-                        "backgroundImageRound": "https://i.imgur.com/qkiABIN.png",
-                        "backgroundImageLandscape": "https://i.imgur.com/sfXjUK1.png"
-                    }
-                }
-            }
-        })
-        .getResponse();  
-    }
+        .getResponse();
   },
 };
 
@@ -197,23 +224,29 @@ const HelpIntentHandler = {
       && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
+    if (supportsAPL(handlerInput)) {
       return handlerInput.responseBuilder
         .speak(helpMessage)
         .reprompt(helpMessage)
-    .addDirective({
-      type : 'Alexa.Presentation.APL.RenderDocument',
-      version: '1.0',
-      document : Main,
-      datasources : {
-        "movieQuoteQuizData": {
-          "type": "object",
-          "properties": {
-            "title": helpMessage
+        .addDirective({
+          type : 'Alexa.Presentation.APL.RenderDocument',
+          document : Main,
+          datasources : {
+            "movieQuoteQuizData": {
+              "type": "object",
+              "properties": {
+                "title": helpMessage
+              }
+            }
           }
-        }
-      }
-    })
-    .getResponse();
+        })
+        .getResponse();
+    } else {
+      return handlerInput.responseBuilder
+        .speak(helpMessage)
+        .reprompt(helpMessage)
+        .getResponse();
+    }
   },
 };
 
@@ -225,22 +258,28 @@ const CancelAndStopIntentHandler = {
   },
   handle(handlerInput) {
     const speechText = 'Goodbye!';
-    return handlerInput.responseBuilder
-    .speak(speechText)
-    .addDirective({
-      type : 'Alexa.Presentation.APL.RenderDocument',
-      version: '1.0',
-      document : Main,
-      datasources : {
-        "movieQuoteQuizData": {
-          "type": "object",
-          "properties": {
-            "title": "Thanks for playing!"
+
+    if (supportsAPL(handlerInput)) {
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .addDirective({
+          type : 'Alexa.Presentation.APL.RenderDocument',
+          document : Main,
+          datasources : {
+            "movieQuoteQuizData": {
+              "type": "object",
+              "properties": {
+                "title": "Thanks for playing!"
+              }
+            }
           }
-        }
-      }
-    })
-    .getResponse();
+        })
+        .getResponse();
+    } else {
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .getResponse();
+    }
   },
 };
 
@@ -260,7 +299,7 @@ const ErrorHandler = {
     return true;
   },
   handle(handlerInput, error) {
-    console.log(`Error handled: ${error.message}`);
+    console.log("WHOLE ERROR" + JSON.stringify(error));
 
     return handlerInput.responseBuilder
       .speak('Sorry, I can\'t understand the command. Please say again.')
@@ -278,7 +317,7 @@ const helpMessage = `Name the movie you would like to be tested on, and then say
 const speechConsCorrect = ['Booya', 'All righty', 'Bam', 'Bazinga', 'Bingo', 'Boom', 'Bravo', 'Cha Ching', 'Cheers', 'Dynomite', 'Hip hip hooray', 'Hurrah', 'Hurray', 'Huzzah', 'Oh dear.  Just kidding.  Hurray', 'Kaboom', 'Kaching', 'Oh snap', 'Phew','Righto', 'Way to go', 'Well done', 'Whee', 'Woo hoo', 'Yay', 'Wowza', 'Yowsa'];
 const speechConsWrong = ['Argh', 'Aw man', 'Blarg', 'Blast', 'Boo', 'Bummer', 'Darn', "D'oh", 'Dun dun dun', 'Eek', 'Honk', 'Le sigh', 'Mamma mia', 'Oh boy', 'Oh dear', 'Oof', 'Ouch', 'Ruh roh', 'Shucks', 'Uh oh', 'Wah wah', 'Whoops a daisy', 'Yikes'];
 const data = [
-  {movieName: 'Wonder Wheel', sentences: [
+  {movieName: 'wonder wheel', sentences: [
     `What a sheltered life I've led. I have book knowledge but you've really tasted life.`,
     `Nothing you could tell me could put the slightest shadow on this evening.`,
     `The kid makes fires. And not such little ones.`,
@@ -291,14 +330,14 @@ const data = [
     `The beach, the boardwalk. Once a luminous jewel, but growing relentlessly seedier as the tides roll in and out.`,
     `Is it the eternal power of the universe? The conversion of mass into energy? The Furies at work? Whatever his motive, it is not appreciated.`
   ]},
-  {movieName: 'Gringo',  sentences: [
+  {movieName: 'gringo',  sentences: [
     `What kind of a man does not believe in God?`,
     `Why do I always get screwed for doing my job?`,
     `I know I'm not supposed to touch the mini-bar but I'm going to do it. `,
     `You know, I don't even care anymore, I'm doing it. I'm having the merlot!`,
     `One was a man who had a crisis of faith and the other was a man who sold his soul for personal gain. So, you have to decide which one you want to be.`
   ]},
-  {movieName: 'The Wall',  sentences: [
+  {movieName: 'the wall',  sentences: [
     `You Americans. You think you know it all.`,
     `Tear up the planks! Here, here! It is the beating of his hideous heart.`,
     `From a place you will not see comes a sound you will not hear.`,
@@ -312,7 +351,7 @@ const data = [
     `Whoever it was they're gone. War's over, he got the memo.`,
     `Just a flash of light. Boom.`
   ]},
-  {movieName: 'Last Flag Flying',  sentences: [
+  {movieName: 'last flag flying',  sentences: [
     `Hey, at least we're not drug addicts.`,
     `I'm not going to bury a marine. I'm just going to bury my son.`,
     `Every generation has their war. Men make the wars and wars make the men. It never ends!`,
@@ -326,7 +365,7 @@ const data = [
     `Urine. I love it. It's like the official scent of the city.`,
     `Colonels don't scare me. Never have, never will.`
   ]},
-  {movieName: 'Paterson',  sentences: [
+  {movieName: 'paterson',  sentences: [
     `Sometimes an empty page presents more possibilities`,
     `You're up late, honey. Your silent magic watch didn't wake you up.`,
     `Poetry in translations is like taking a shower with a raincoat on.`,
@@ -394,6 +433,12 @@ function pickSentence(movie) {
     return obj.movieName === movie;
   })[0].sentences;
   return movieQuotes[getRandom(0, movieQuotes.length - 1)];
+}
+
+function supportsAPL(handlerInput) {
+    const supportedInterfaces = handlerInput.requestEnvelope.context.System.device.supportedInterfaces;
+    const aplInterface = supportedInterfaces['Alexa.Presentation.APL'];
+    return aplInterface != null && aplInterface != undefined;
 }
 
 /******** LAMBDA SETUP ********/
