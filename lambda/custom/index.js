@@ -274,10 +274,12 @@ const CancelAndStopIntentHandler = {
             }
           }
         })
+        .withShouldEndSession(true)
         .getResponse();
     } else {
       return handlerInput.responseBuilder
         .speak(speechText)
+        .withShouldEndSession(true)
         .getResponse();
     }
   },
