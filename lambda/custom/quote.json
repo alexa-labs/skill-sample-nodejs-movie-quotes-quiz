@@ -30,7 +30,7 @@
                         "scale": "best-fill"
                     },
                     {
-                        "when": "${@viewportProfile == @hubLandscapeMedium || @viewportProfile == @hubLandscapeLarge || @viewportProfile == @tvLandscapeXLarge}",
+                        "when": "${@viewportProfile == @hubLandscapeSmall || @viewportProfile == @hubLandscapeMedium ||@viewportProfile == @hubLandscapeLarge || @viewportProfile == @tvLandscapeXLarge}",
                         "type": "Image",
                         "source": "${datasource.movieQuoteQuizData.properties.backgroundImageLandscape}",
                         "position": "absolute",
